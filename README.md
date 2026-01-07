@@ -10,3 +10,5 @@ Running Claude Code in Docker container, using GCloud Vertex AI.
 Mounted at `../claude-workspace` directory - use this for persisting artifacts across container restarts.
 
 Global Claude config is stored in `./claude-config`, for persisting across container restarts.
+
+[EXPERIMENTAL] To track realtime daily usage and costs of Vertex AI Claude models, run: `make usage`
