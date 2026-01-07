@@ -7,6 +7,6 @@ Running Claude Code in Docker container, using GCloud Vertex AI.
 5. Run `claude` - open Claude Code inside container.
 
 
-Mounted at `../claude-workspace` directory - use this for persisting code across container restarts.
+Mounted at `../claude-workspace` directory - use this for persisting artifacts across container restarts.
 
 Global Claude config is stored in `./claude-config`, for perisisting across container restarts.
