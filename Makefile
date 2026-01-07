@@ -18,7 +18,7 @@ WORKSPACE_DIR ?= $(abspath $(PWD)/../claude-workspace)
 # Persistent Claude config (inside this repo)
 CLAUDE_CONFIG_DIR ?= $(abspath $(PWD)/claude-config)
 
-.PHONY: build claude check-sa ensure-dirs usage
+.PHONY: build claude check-sa ensure-dirs usage usage-live
 
 build:
 	docker build -t $(IMAGE) .
@@ -54,3 +54,13 @@ claude: ensure-dirs check-sa
 
 usage: ensure-dirs
 	node scripts/vertex-claude-usage-daily.mjs
+
+usage-live: ensure-dirs
+	@while true; do \
+		clear; \
+		date; \
+		echo; \
+		node scripts/vertex-claude-usage-daily.mjs; \
+		echo; \
+		sleep 1; \
+	done
