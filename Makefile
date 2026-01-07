@@ -15,20 +15,24 @@ SA_PATH ?= $(HOME)/.config/claude-vertex/sa.json
 # Persistent workspace (sibling of this repo)
 WORKSPACE_DIR ?= $(abspath $(PWD)/../claude-workspace)
 
-.PHONY: build claude check-sa ensure-workspace
+# Persistent Claude config (inside this repo)
+CLAUDE_CONFIG_DIR ?= $(abspath $(PWD)/claude-config)
+
+.PHONY: build claude check-sa ensure-dirs
 
 build:
 	docker build -t $(IMAGE) .
 
-ensure-workspace:
-	@mkdir -p "$(WORKSPACE_DIR)"
+ensure-dirs:
+	@mkdir -p "$(WORKSPACE_DIR)" "$(CLAUDE_CONFIG_DIR)"
 	@echo "📁 Workspace dir: $(WORKSPACE_DIR)"
+	@echo "🔧 Claude config dir: $(CLAUDE_CONFIG_DIR)"
 
 check-sa:
 	@test -f "$(SA_PATH)" || (echo "❌ Service account not found at $(SA_PATH)" && exit 1)
 	@test -n "$(PROJECT_ID)" || (echo "❌ PROJECT_ID not set (create .env with PROJECT_ID=...)" && exit 1)
 
-claude: ensure-workspace check-sa
+claude: ensure-dirs check-sa
 	docker run --rm -it \
 	  --name $(CONTAINER) \
 	  --read-only \
@@ -37,10 +41,10 @@ claude: ensure-workspace check-sa
 	  --pids-limit=256 \
 	  --memory=2g \
 	  --tmpfs /tmp:rw,nosuid,nodev,noexec,size=256m \
-	  --tmpfs /claude-home:rw,nosuid,nodev,size=1g,uid=1000,gid=1000 \
 	  -e HOME=/claude-home \
 	  -v "$(WORKSPACE_DIR):/workspace:rw" \
 	  -v "$(PWD):/workspace-ro:ro" \
+	  -v "$(CLAUDE_CONFIG_DIR):/claude-home:rw" \
 	  -v "$(SA_PATH):/secrets/sa.json:ro" \
 	  -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/sa.json \
 	  -e CLAUDE_CODE_USE_VERTEX=1 \
