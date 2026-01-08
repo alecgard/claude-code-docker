@@ -1,0 +1,14 @@
+{
+  "name": "claude-code-docker",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "ccusage": "17.2.1"
+  },
+  "scripts": {
+    "ccusage": "ccusage"
+  }
+}

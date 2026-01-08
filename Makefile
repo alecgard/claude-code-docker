@@ -18,7 +18,7 @@ WORKSPACE_DIR ?= $(abspath $(PWD)/../claude-workspace)
 # Persistent Claude config (inside this repo)
 CLAUDE_CONFIG_DIR ?= $(abspath $(PWD)/claude-config)
 
-.PHONY: build claude check-sa ensure-dirs ccusage
+.PHONY: build claude check-sa ensure-dirs usage usage-live
 
 build:
 	docker build -t $(IMAGE) .
@@ -52,6 +52,17 @@ claude: ensure-dirs check-sa
 	  -e ANTHROPIC_VERTEX_PROJECT_ID=$(PROJECT_ID) \
 	  $(IMAGE)
 
-ccusage:
+usage: ensure-dirs
 	CLAUDE_CONFIG_DIR="$(CLAUDE_CONFIG_DIR)/.claude" \
-	npx -y ccusage@latest
+	npm run --silent ccusage --compact
+
+usage-live: ensure-dirs
+	@while true; do \
+		clear; \
+		date; \
+		echo; \
+		CLAUDE_CONFIG_DIR="$(CLAUDE_CONFIG_DIR)/.claude" \
+		npm run --silent ccusage --compact; \
+		echo; \
+		sleep 5; \
+	done
